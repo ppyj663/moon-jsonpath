@@ -1,0 +1,8 @@
+{
+  "kind": "package",
+  "relative_path": "cmd/main",
+  "module_path": "username/jsonpath",
+  "readme_content": "",
+  "package_data": "username/jsonpath/cmd/main/package_data.json",
+  "source_files": [ "main.mbt" ]
+}
