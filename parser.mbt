@@ -57,7 +57,28 @@ pub fn parse(input : String) -> Result[JSONPath, String] {
           return Err("Expected ']' after string literal")
         }
         segments.push(PathSegment::Child(name))
-      } else { return Err("Unsupported syntax inside '['") } } else { return Err("Unexpected character") } } Ok(segments) }
+      } else if i < len && is_digit(input[i].to_int()) {
+        let mut num = 0
+        while i < len && is_digit(input[i].to_int()) {
+          num = num * 10 + (input[i].to_int() - 48)
+          i = i + 1
+        }
+        if i < len && input[i].to_int() == ']'.to_int() {
+          i = i + 1
+        } else {
+          return Err("Expected ']' after number")
+        }
+        segments.push(PathSegment::Index(num))
+      } else {
+        return Err("Unsupported syntax inside '['")
+      }
+    } else {
+      return Err("Unexpected character")
+    }
+  }
+  Ok(segments)
+}
+
 fn read_ident(input : String, start : Int) -> (String, Int) {
   let len = input.length()
   let mut i = start
