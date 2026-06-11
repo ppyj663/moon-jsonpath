@@ -1,0 +1,69 @@
+{
+  "name": "username/jsonpath",
+  "traits": [],
+  "errors": [],
+  "types": [
+    {
+      "name": "PathSegment",
+      "docstring": "",
+      "signature": "pub enum PathSegment {\n  Root\n  Child(String)\n  Descendant(String)\n  Index(Int)\n  Wildcard\n} derive(<a href=\"moonbitlang/core/builtin#Eq\">Eq</a>, <a href=\"moonbitlang/core/debug#Debug\">@moonbitlang/core/debug.Debug</a>)",
+      "loc": {
+        "path": "username/jsonpath",
+        "file": "ast.mbt",
+        "line": 1,
+        "column": 10
+      },
+      "methods": [],
+      "impls": []
+    }
+  ],
+  "typealias": [
+    {
+      "name": "JSONPath",
+      "docstring": "\n An `Array` is a collection of values that supports random access and can\n grow in size.",
+      "signature": "type JSONPath = <a href=\"moonbitlang/core/builtin#Array\">Array</a>[<a href=\"username/jsonpath#PathSegment\">PathSegment</a>]",
+      "loc": {
+        "path": "username/jsonpath",
+        "file": "ast.mbt",
+        "line": 9,
+        "column": 1
+      }
+    }
+  ],
+  "values": [
+    {
+      "name": "evaluate",
+      "docstring": "",
+      "signature": "fn evaluate(json : <a href=\"moonbitlang/core/builtin#Json\">Json</a>, path : <a href=\"moonbitlang/core/builtin#Array\">Array</a>[<a href=\"username/jsonpath#PathSegment\">PathSegment</a>]) -> <a href=\"moonbitlang/core/builtin#Array\">Array</a>[<a href=\"moonbitlang/core/builtin#Json\">Json</a>]",
+      "loc": {
+        "path": "username/jsonpath",
+        "file": "eval.mbt",
+        "line": 1,
+        "column": 8
+      }
+    },
+    {
+      "name": "parse",
+      "docstring": "",
+      "signature": "fn parse(input : String) -> Result[<a href=\"moonbitlang/core/builtin#Array\">Array</a>[<a href=\"username/jsonpath#PathSegment\">PathSegment</a>], String]",
+      "loc": {
+        "path": "username/jsonpath",
+        "file": "parser.mbt",
+        "line": 1,
+        "column": 8
+      }
+    },
+    {
+      "name": "query",
+      "docstring": "",
+      "signature": "fn query(json : <a href=\"moonbitlang/core/builtin#Json\">Json</a>, path_str : String) -> Result[<a href=\"moonbitlang/core/builtin#Array\">Array</a>[<a href=\"moonbitlang/core/builtin#Json\">Json</a>], String]",
+      "loc": {
+        "path": "username/jsonpath",
+        "file": "jsonpath.mbt",
+        "line": 1,
+        "column": 8
+      }
+    }
+  ],
+  "misc": []
+}
