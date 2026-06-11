@@ -45,7 +45,17 @@ pub fn evaluate(json : Json, path : JSONPath) -> Array[Json] {
             _ => ()
           }
         }
-        Descendant(name) => () } } current = next } current }fn find_descendants(node : Json, name : String, acc : Array[Json]) -> Unit {
+        Descendant(name) => {
+          find_descendants(node, name, next)
+        }
+      }
+    }
+    current = next
+  }
+  current
+}
+
+fn find_descendants(node : Json, name : String, acc : Array[Json]) -> Unit {
   match node {
     Object(obj) => {
       match obj.get(name) {
