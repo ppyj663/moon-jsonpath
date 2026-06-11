@@ -1,0 +1,39 @@
+{
+  "name": "username",
+  "package": null,
+  "childs": [
+    {
+      "name": "jsonpath",
+      "package": {
+        "path": "username/jsonpath",
+        "traits": [],
+        "errors": [],
+        "types": [ { "name": "PathSegment", "impls": [], "methods": [] } ],
+        "typealias": [ "JSONPath" ],
+        "values": [ "evaluate", "parse", "query" ],
+        "misc": []
+      },
+      "childs": [
+        {
+          "name": "cmd",
+          "package": null,
+          "childs": [
+            {
+              "name": "main",
+              "package": {
+                "path": "username/jsonpath/cmd/main",
+                "traits": [],
+                "errors": [],
+                "types": [],
+                "typealias": [],
+                "values": [],
+                "misc": []
+              },
+              "childs": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
