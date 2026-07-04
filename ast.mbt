@@ -1,3 +1,4 @@
+///|
 pub enum PathSegment {
   Root
   Child(String)
@@ -6,4 +7,5 @@ pub enum PathSegment {
   Wildcard
 } derive(Eq, @debug.Debug)
 
+///|
 pub type JSONPath = Array[PathSegment]

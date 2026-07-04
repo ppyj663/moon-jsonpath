@@ -1,4 +1,5 @@
-test "jsonpath query" {
+///|
+fn sample_json() -> Json raise {
   let json_str =
     #|{
     #|  "store": {
@@ -14,62 +15,108 @@ test "jsonpath query" {
     #|    }
     #|  }
     #|}
-  let json = @json.parse!(json_str)
+  @json.parse(json_str)
+}
 
-  // Test root
+///|
+test "jsonpath query core syntax" {
+  let json = sample_json()
+
   match query(json, "$") {
     Ok(res) => if res.length() != 1 { abort("root failed") }
     Err(_) => abort("root failed err")
   }
 
-  // Test child access
   match query(json, "$.store.bicycle.color") {
     Ok(res) => {
-      if res.length() != 1 { abort("child length failed") }
-      if res[0].stringify() != "\"red\"" { abort("child content failed") }
+      if res.length() != 1 {
+        abort("child length failed")
+      }
+      if res[0].stringify() != "\"red\"" {
+        abort("child content failed")
+      }
     }
     Err(_) => abort("child failed err")
   }
 
-  // Test array index
   match query(json, "$.store.book[1].author") {
     Ok(res) => {
-      if res.length() != 1 { abort("array length failed") }
-      if res[0].stringify() != "\"Evelyn Waugh\"" { abort("array content failed") }
+      if res.length() != 1 {
+        abort("array length failed")
+      }
+      if res[0].stringify() != "\"Evelyn Waugh\"" {
+        abort("array content failed")
+      }
     }
     Err(_) => abort("array failed err")
   }
 
-  // Test wildcard object
   match query(json, "$.store.bicycle.*") {
-    Ok(res) => {
-      if res.length() != 2 { abort("wildcard length failed") }
-    }
+    Ok(res) => if res.length() != 2 { abort("wildcard length failed") }
     Err(_) => abort("wildcard failed err")
   }
 
-  // Test wildcard array
   match query(json, "$.store.book[*].author") {
-    Ok(res) => {
-      if res.length() != 4 { abort("wildcard array failed") }
-    }
+    Ok(res) => if res.length() != 4 { abort("wildcard array failed") }
     Err(_) => abort("wildcard array failed err")
   }
 
-  // Test descendant
   match query(json, "$..price") {
-    Ok(res) => {
-      if res.length() != 5 { abort("descendant failed") }
-    }
+    Ok(res) => if res.length() != 5 { abort("descendant failed") }
     Err(_) => abort("descendant err")
   }
 
-  // Test bracket notation
   match query(json, "$['store']['bicycle']['color']") {
     Ok(res) => {
-      if res.length() != 1 { abort("bracket length failed") }
-      if res[0].stringify() != "\"red\"" { abort("bracket content failed") }
+      if res.length() != 1 {
+        abort("bracket length failed")
+      }
+      if res[0].stringify() != "\"red\"" {
+        abort("bracket content failed")
+      }
     }
     Err(_) => abort("bracket err")
+  }
+}
+
+///|
+test "jsonpath missing and invalid queries" {
+  let json = sample_json()
+
+  match query(json, "$.store.missing") {
+    Ok(res) => if res.length() != 0 { abort("missing field should not match") }
+    Err(_) => abort("missing field should not raise")
+  }
+
+  match query(json, "$.store.book[99]") {
+    Ok(res) =>
+      if res.length() != 0 {
+        abort("out-of-range index should not match")
+      }
+    Err(_) => abort("out-of-range index should not raise")
+  }
+
+  match query(json, "store.book") {
+    Ok(_) => abort("path without root should fail")
+    Err(message) =>
+      if message != "JSONPath must start with '$'" {
+        abort("unexpected missing-root error")
+      }
+  }
+
+  match query(json, "$.") {
+    Ok(_) => abort("trailing dot should fail")
+    Err(message) =>
+      if message != "Expected identifier after '.'" {
+        abort("unexpected trailing-dot error")
+      }
+  }
+
+  match query(json, "$['store'") {
+    Ok(_) => abort("unterminated bracket should fail")
+    Err(message) =>
+      if message != "Expected ']' after string literal" {
+        abort("unexpected unterminated-bracket error")
+      }
   }
 }

@@ -1,0 +1,29 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "ppyj663/moon-jsonpath"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn evaluate(Json, Array[PathSegment]) -> Array[Json]
+
+pub fn parse(String) -> Result[Array[PathSegment], String]
+
+pub fn query(Json, String) -> Result[Array[Json], String]
+
+// Errors
+
+// Types and methods
+pub enum PathSegment {
+  Root
+  Child(String)
+  Descendant(String)
+  Index(Int)
+  Wildcard
+} derive(Eq, @debug.Debug)
+
+// Type aliases
+pub type JSONPath = Array[PathSegment]
+
+// Traits

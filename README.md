@@ -1,105 +1,118 @@
 # MoonBit JSONPath
 
-[![MoonBit Version](https://img.shields.io/badge/MoonBit-2024+-blue.svg)](https://www.moonbitlang.com/)
-[![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
+[![MoonBit](https://img.shields.io/badge/MoonBit-2026-blue)](https://www.moonbitlang.com/)
+[![License](https://img.shields.io/badge/License-Apache--2.0-green)](LICENSE)
 
-这是一个基于 MoonBit 实现的 JSONPath 解析与执行库。项目参考了 [RFC 9535 标准](https://www.rfc-editor.org/rfc/rfc9535) 的核心规范，提供了一套用于从复杂 JSON 结构中查询和提取节点的工具。
+MoonBit JSONPath is a small JSONPath parser and evaluator written in MoonBit. It targets the core query patterns described by [RFC 9535](https://www.rfc-editor.org/rfc/rfc9535) and integrates directly with `moonbitlang/core/json`.
 
-## 核心特性
+The project is maintained for the MoonBit Open Source Ecosystem Competition 2026. The public repositories are:
 
-*   **类型安全**：基于 MoonBit 强类型系统，并与官方库的 `@json.Json` 类型深度整合，提供安全的解析和查询能力。
-*   **无外部依赖**：项目只使用了 MoonBit 标准库，没有引入第三方包。代码结构简单，可以直接编译到 WebAssembly 环境。
-*   **语法支持**：支持点表示法 (`$.store.book`) 和括号表示法 (`$['store']['book']`)，同时也支持深度递归搜索 (`..`)、通配符 (`*`) 和数组索引访问 (`[number]`)。
-*   **实现架构**：采用了经典的词法解析 (Parser) -> 抽象语法树 (AST) -> 执行求值 (Evaluator) 的结构分层设计，方便后续维护和功能扩展。
+- GitHub: <https://github.com/ppyj663/moon-jsonpath>
+- GitLink: <https://gitlink.org.cn/ppyj663/moon-jsonpath>
 
-## 安装
+## Features
 
-可以通过 moon 包管理器添加到你的项目中：
+- Parses JSONPath strings into a compact MoonBit AST.
+- Evaluates queries against `Json` values from `moonbitlang/core/json`.
+- Supports root, child, bracket child, recursive descendant, wildcard, and array index selectors.
+- Ships focused unit tests and a runnable CLI example.
+- Uses the Apache-2.0 license.
+
+## Installation
+
+The module name is:
 
 ```bash
-moon add ppyj663/jsonpath
+ppyj663/moon-jsonpath
 ```
 
-在 `moon.pkg.json` 中配置引入：
+After publication to Mooncakes, add it from your project root:
 
-```json
-{
-  "import": [
-    "ppyj663/jsonpath"
-  ]
+```bash
+moon add ppyj663/moon-jsonpath
+```
+
+Then import it from a package:
+
+```mbt nocheck
+import {
+  "ppyj663/moon-jsonpath" @jsonpath,
 }
 ```
 
-## 快速上手
+## Quick Start
 
-下面是一个简单的示例，展示如何查询目标字段。
-
-```moonbit
-let json_str =
+```mbt nocheck
+let json = @json.parse(
   #|{
   #|  "store": {
   #|    "book": [
-  #|      { "category": "reference", "author": "Nigel Rees", "title": "Sayings of the Century", "price": 8.95 },
-  #|      { "category": "fiction", "author": "Evelyn Waugh", "title": "Sword of Honour", "price": 12.99 }
-  #|    ],
-  #|    "bicycle": { "color": "red", "price": 19.95 }
+  #|      { "title": "Sayings of the Century", "price": 8.95 },
+  #|      { "title": "Sword of Honour", "price": 12.99 }
+  #|    ]
   #|  }
   #|}
+)
 
-// 1. 将字符串解析为 @json.Json 类型
-let json = @json.parse!(json_str)
-
-// 2. 使用 JSONPath 查询数据
 match @jsonpath.query(json, "$.store.book[0].title") {
-  Ok(res) => {
-    // res 类型为 Array[Json]
-    println("找到 \{res.length()} 个匹配项:")
-    println(res[0]) // 输出: Json::String("Sayings of the Century")
-  }
-  Err(e) => println("解析或查询出错: \{e}")
+  Ok(values) => println(values[0].stringify())
+  Err(message) => println("query failed: \{message}")
 }
 ```
 
-## 支持的查询语法
+Run the included example:
 
-当前版本支持的 JSONPath 核心操作符如下：
-
-| 语法标识 | 描述 | 示例 |
-| :--- | :--- | :--- |
-| `$` | 根节点，所有查询的起始位置。 | `$` |
-| `.<name>` | 访问对象中的指定字段。 | `$.store.bicycle` |
-| `['<name>']`| 访问对象中的指定字段（适用于带特殊字符的键名）。| `$['store']['book']` |
-| `..` | 递归搜索当前树下的所有匹配节点。 | `$..price` |
-| `.*` / `[*]` | 通配符，匹配所有字段或数组元素。 | `$.store.book[*]` |
-| `[<number>]`| 通过数组下标访问元素。 | `$..book[1]` |
-
-### 更多使用场景
-
-提取所有层级中的 `price` 字段：
-```moonbit
-let all_prices = @jsonpath.query(json, "$..price").unwrap()
+```bash
+moon run cmd/main
 ```
 
-获取所有的 book 对象：
-```moonbit
-let all_books = @jsonpath.query(json, "$.store.book[*]").unwrap()
+Expected output:
+
+```text
+query: $.store.book[0].title
+matches: 1
+"Sayings of the Century"
 ```
 
-## 代码结构说明
+## Supported Syntax
 
-本项目主要分为以下几个模块：
+| Syntax | Meaning | Example |
+| --- | --- | --- |
+| `$` | Root node | `$` |
+| `.<name>` | Object child selector | `$.store.bicycle` |
+| `['<name>']` or `["<name>"]` | Bracket child selector | `$['store']['book']` |
+| `.. <name>` without the space | Recursive descendant selector | `$..price` |
+| `.*` / `[*]` | Object or array wildcard | `$.store.book[*]` |
+| `[<number>]` | Zero-based array index | `$.store.book[0]` |
 
-*   `ast.mbt`：定义了 JSONPath 的抽象语法树节点。
-*   `parser.mbt`：基于递归下降算法实现的解析器，将字符串解析为 AST 结构。
-*   `eval.mbt`：执行引擎，负责遍历 `@json.Json` 数据并根据 AST 过滤出目标节点。
-*   `jsonpath.mbt`：对外暴露的 `query` 函数入口。
-*   `jsonpath_test.mbt`：包含针对核心功能的测试用例。
+Not yet supported: filters such as `[?(@.price < 10)]`, slices, unions, negative indices, and function extensions.
 
-## 后续计划
+## API
 
-- [ ] 支持更复杂的过滤器表达式 (例如 `[?(@.price < 10)]`)。
-- [ ] 支持数组的多选切片 (例如 `[0:5:2]`, `[0,1]`)。
+```mbt nocheck
+pub fn parse(input : String) -> Result[JSONPath, String]
+pub fn evaluate(json : Json, path : JSONPath) -> Array[Json]
+pub fn query(json : Json, path_str : String) -> Result[Array[Json], String]
+```
 
-## 许可证
+`query` is the usual entry point. It returns `Err(message)` for unsupported or malformed JSONPath syntax and returns an empty array when a valid query simply finds no matching node.
 
-本项目采用 Apache-2.0 许可证进行开源。
+## Development
+
+```bash
+moon update
+moon fmt --check
+moon check --warn-list +73
+moon test
+moon run cmd/main
+```
+
+The repository also contains a GitHub Actions workflow that runs the same verification path on every push and pull request.
+
+## Competition Closeout
+
+Closeout evidence is tracked in [docs/competition/acceptance.md](docs/competition/acceptance.md). The one-page project report is [report.pdf](report.pdf).
+
+## License
+
+This project is released under the [Apache License 2.0](LICENSE).

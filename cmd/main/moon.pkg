@@ -1,6 +1,7 @@
-// import {
-//   "username/jsonpath" @lib,
-// }
+import {
+  "moonbitlang/core/json",
+  "ppyj663/moon-jsonpath" @jsonpath,
+}
 
 options(
   "is-main": true,
