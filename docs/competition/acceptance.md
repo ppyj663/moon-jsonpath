@@ -47,7 +47,7 @@ The GitHub Actions workflow in `.github/workflows/ci.yml` runs the same MoonBit 
 - CI: `.github/workflows/ci.yml` validates the package on GitHub.
 - License: `LICENSE` is Apache-2.0.
 - Report: `report.pdf` summarizes the project and verification evidence.
-- Mooncakes: publish target is `ppyj663/moon-jsonpath`. `moon package` validates this package name locally. A `moon publish --dry-run` package check passed, but the final server step was blocked because the local Mooncakes session is authenticated as `caassien`, while the module owner is `ppyj663`. Re-run `moon login` as `ppyj663`, then `moon publish`.
+- Mooncakes: publication is deferred for this repository-only closeout pass. `moon package` validates the package archive locally; publish later as `ppyj663/moon-jsonpath` after logging in to Mooncakes with the matching owner account.
 
 ## Maintenance Notes
 

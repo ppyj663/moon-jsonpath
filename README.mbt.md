@@ -26,7 +26,7 @@ The module name is:
 ppyj663/moon-jsonpath
 ```
 
-After publication to Mooncakes, add it from your project root:
+For local development, use this repository as the module source. When the package is published later, add it from your project root:
 
 ```bash
 moon add ppyj663/moon-jsonpath
@@ -108,6 +108,8 @@ moon run cmd/main
 ```
 
 The repository also contains a GitHub Actions workflow that runs the same verification path on every push and pull request.
+
+Mooncakes publication is intentionally deferred for this closeout pass. The repository is package-ready and `moon package` validates the archive locally.
 
 ## Competition Closeout
 
