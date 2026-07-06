@@ -47,7 +47,7 @@ The GitHub Actions workflow in `.github/workflows/ci.yml` runs the same MoonBit 
 - CI: `.github/workflows/ci.yml` validates the package on GitHub.
 - License: `LICENSE` is Apache-2.0.
 - Report: `report.pdf` summarizes the project and verification evidence.
-- Mooncakes: publication is deferred for this repository-only closeout pass. `moon package` validates the package archive locally; publish later as `ppyj663/moon-jsonpath` after logging in to Mooncakes with the matching owner account.
+- Mooncakes: package `ppyj663/moon-jsonpath` version `0.1.0` is published. `moon package`, `moon publish --dry-run`, and `moon publish` validated the archive and server-side publication path.
 
 ## Maintenance Notes
 
