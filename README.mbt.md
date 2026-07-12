@@ -14,7 +14,8 @@ The project is maintained for the MoonBit Open Source Ecosystem Competition 2026
 
 - Parses JSONPath strings into a compact MoonBit AST.
 - Evaluates queries against `Json` values from `moonbitlang/core/json`.
-- Supports root, child, bracket child, recursive descendant, wildcard, and array index selectors.
+- Supports root, child, bracket child, recursive descendant, wildcard, array index, negative index, slicing, union, and filter selectors.
+- Supports escape sequences and unicode escapes in bracket name selectors.
 - Ships focused unit tests and a runnable CLI example.
 - Uses the Apache-2.0 license.
 
@@ -80,12 +81,15 @@ matches: 1
 | --- | --- | --- |
 | `$` | Root node | `$` |
 | `.<name>` | Object child selector | `$.store.bicycle` |
-| `['<name>']` or `["<name>"]` | Bracket child selector | `$['store']['book']` |
+| `['<name>']` or `["<name>"]` | Bracket child selector (supports string escapes) | `$['store']['book']` |
 | `.. <name>` without the space | Recursive descendant selector | `$..price` |
 | `.*` / `[*]` | Object or array wildcard | `$.store.book[*]` |
-| `[<number>]` | Zero-based array index | `$.store.book[0]` |
+| `[<number>]` | Array index (supports negative indices) | `$.store.book[-1]` |
+| `[<start>:<end>:<step>]` | Array slicing (supports positive and negative steps) | `$.store.book[1:3]` |
+| `[<sel1>, <sel2>]` | Union selector | `$.store.book[0, 2]` |
+| `[?(<expr>)]` | Filter selector (supports comparisons, logical AND/OR/NOT) | `$.store.book[?(@.price < 10)]` |
 
-Not yet supported: filters such as `[?(@.price < 10)]`, slices, unions, negative indices, and function extensions.
+Not yet supported: function extensions.
 
 ## API
 
@@ -102,14 +106,14 @@ pub fn query(json : Json, path_str : String) -> Result[Array[Json], String]
 ```bash
 moon update
 moon fmt --check
-moon check --warn-list +73
+moon check --deny-warn
 moon test
 moon run cmd/main
 ```
 
 The repository also contains a GitHub Actions workflow that runs the same verification path on every push and pull request.
 
-Mooncakes package `ppyj663/moon-jsonpath` version `0.1.0` is published. The release was validated with `moon package`, `moon publish --dry-run`, and `moon publish`.
+Mooncakes package `ppyj663/moon-jsonpath` version `0.2.0` is published. The release was validated with `moon package`, `moon publish --dry-run`, and `moon publish`.
 
 ## Competition Closeout
 

@@ -11,16 +11,19 @@
 
 ## Delivered Scope
 
-This project provides a compact JSONPath parser and evaluator for `moonbitlang/core/json`. The accepted v0.1.0 scope covers:
+This project provides a compact JSONPath parser and evaluator for `moonbitlang/core/json`. The accepted v0.2.0 scope covers:
 
 - Root selector: `$`
 - Object child selector: `.<name>`
-- Bracket child selector: `['<name>']` and `["<name>"]`
+- Bracket child selector: `['<name>']` and `["<name>"]` (supports string escapes)
 - Recursive descendant selector: `$..name`
 - Object and array wildcard selectors: `.*` and `[*]`
-- Zero-based array index selector: `[0]`, `[1]`, and similar non-negative indices
+- Array index selector: supports negative indices like `[-1]`
+- Array slicing: positive and negative steps like `[1:3]`, `[3:0:-1]`
+- Union selector: multiple indices or fields like `[0, 2]`, `['title', 'price']`
+- Filter selector: comparisons and boolean logical expressions like `[?(@.price < 10)]`, `[?(!@.isbn)]`
 
-Unsupported syntax is intentionally documented: filters, slices, unions, negative indices, and function extensions.
+Unsupported syntax is intentionally documented: function extensions.
 
 ## Verification Commands
 
@@ -30,7 +33,7 @@ Run from the repository root:
 moon version --all
 moon update
 moon fmt --check
-moon check --warn-list +73
+moon check --deny-warn
 moon test
 moon run cmd/main
 git diff --check
@@ -47,7 +50,7 @@ The GitHub Actions workflow in `.github/workflows/ci.yml` runs the same MoonBit 
 - CI: `.github/workflows/ci.yml` validates the package on GitHub.
 - License: `LICENSE` is Apache-2.0.
 - Report: `report.pdf` summarizes the project and verification evidence.
-- Mooncakes: package `ppyj663/moon-jsonpath` version `0.1.0` is published. `moon package`, `moon publish --dry-run`, and `moon publish` validated the archive and server-side publication path.
+- Mooncakes: package `ppyj663/moon-jsonpath` version `0.2.0` is published. `moon package`, `moon publish --dry-run`, and `moon publish` validated the archive and server-side publication path.
 
 ## Maintenance Notes
 
